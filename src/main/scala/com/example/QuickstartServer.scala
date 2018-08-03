@@ -30,12 +30,10 @@ object QuickstartServer extends App with UserRoutes {
 
   val port: Int = \/.fromTryCatchNonFatal(sys.env("PORT").toInt).getOrElse(8080)
 
-  val port2: Int = \/.fromTryCatchNonFatal(system.settings.config.getInt("http.port")).getOrElse(8080)
-
   //#http-server
-  Http().bindAndHandle(routes, "127.0.0.1", port)
+  Http().bindAndHandle(routes, "0.0.0.0", port)
 
-  println(s"Server online at http://localhost:$port/$port2")
+  println(s"Server online at http://0.0.0.0:$port")
 
   Await.result(system.whenTerminated, Duration.Inf)
   //#http-server
