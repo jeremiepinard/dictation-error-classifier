@@ -25,9 +25,9 @@ trait UserRoutes extends JsonSupport {
   // we leave these abstract, since they will be provided by the App
   implicit def system: ActorSystem
 
-  lazy val log = Logging(system, classOf[UserRoutes])
+  private lazy val log = Logging(system, classOf[FrontendRoutes])
 
-  // other dependencies that UserRoutes use
+  // other dependencies that FrontendRoutes use
   def userRegistryActor: ActorRef
 
   // Required by the `ask` (?) method below

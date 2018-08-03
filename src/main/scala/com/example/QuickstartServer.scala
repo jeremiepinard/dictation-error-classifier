@@ -1,18 +1,18 @@
 package com.example
 
 //#quick-start-server
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 import scalaz.\/
-import scalaz.std.either._
+import akka.http.scaladsl.server.Directives._
 
 //#main-class
-object QuickstartServer extends App with UserRoutes {
+object QuickstartServer extends App with UserRoutes with FrontendRoutes {
 
   // set up ActorSystem and other dependencies here
   //#main-class
@@ -24,8 +24,8 @@ object QuickstartServer extends App with UserRoutes {
   val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
 
   //#main-class
-  // from the UserRoutes trait
-  lazy val routes: Route = userRoutes
+  // from the FrontendRoutes trait
+  lazy val routes: Route = userRoutes ~ frontendRoutes
   //#main-class
 
   val port: Int = \/.fromTryCatchNonFatal(sys.env("PORT").toInt).getOrElse(8080)
