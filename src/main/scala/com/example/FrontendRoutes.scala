@@ -2,7 +2,6 @@ package com.example
 
 import akka.actor.ActorSystem
 import akka.event.Logging
-import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.PathDirectives.path
@@ -15,7 +14,7 @@ trait FrontendRoutes extends JsonSupport {
 
   lazy val frontendRoutes: Route =
     pathEndOrSingleSlash {
-      redirect("/index.html", StatusCodes.PermanentRedirect)
+      getFromResource(s"dist/index.html")
     } ~
       path(Remaining) {
         asset =>
