@@ -3,11 +3,13 @@ package com.example
 //#quick-start-server
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
-
-import akka.actor.{ ActorRef, ActorSystem }
+import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+
+import scalaz.\/
+import scalaz.std.either._
 
 //#main-class
 object QuickstartServer extends App with UserRoutes {
@@ -26,10 +28,12 @@ object QuickstartServer extends App with UserRoutes {
   lazy val routes: Route = userRoutes
   //#main-class
 
-  //#http-server
-  Http().bindAndHandle(routes, "localhost", 8080)
+  val port: Int = \/.fromTryCatchNonFatal(sys.env("PORT").toInt).getOrElse(8080)
 
-  println(s"Server online at http://localhost:8080/")
+  //#http-server
+  Http().bindAndHandle(routes, "localhost", port)
+
+  println(s"Server online at http://localhost:$port/")
 
   Await.result(system.whenTerminated, Duration.Inf)
   //#http-server
