@@ -1,4 +1,4 @@
-package com.example
+package com.dictation
 
 //#quick-start-server
 import akka.actor.{ActorRef, ActorSystem}
@@ -12,7 +12,7 @@ import scalaz.\/
 import akka.http.scaladsl.server.Directives._
 
 //#main-class
-object QuickstartServer extends App with UserRoutes with FrontendRoutes {
+object QuickstartServer extends App with DictationRoutes with FrontendRoutes {
 
   // set up ActorSystem and other dependencies here
   //#main-class
@@ -21,11 +21,16 @@ object QuickstartServer extends App with UserRoutes with FrontendRoutes {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   //#server-bootstrapping
 
-  val userRegistryActor: ActorRef = system.actorOf(UserRegistryActor.props, "userRegistryActor")
+  val dictationRegistryActor: ActorRef = system.actorOf(DictationRegistryActor.props, "dictationRegistryActor")
 
   //#main-class
   // from the FrontendRoutes trait
-  lazy val routes: Route = userRoutes ~ frontendRoutes
+  lazy val routes: Route =
+  pathPrefix("api" / "v1") {
+    concat {
+      dictationsRoutes
+    }
+  } ~ frontendRoutes
   //#main-class
 
   val port: Int = \/.fromTryCatchNonFatal(sys.env("PORT").toInt).getOrElse(8080)
