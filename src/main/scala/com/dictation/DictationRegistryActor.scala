@@ -9,8 +9,8 @@ class DictationRegistryActor extends Actor with ActorLogging {
   import DictationRegistryActor._
 
   var dictations = Set(
-    Dictation(UUID.randomUUID().toString, "Les Animaux",Seq("aaa", "bbb")),
-    Dictation(UUID.randomUUID().toString, "Les Arbres", Seq("aaa", "bbb"))
+    Dictation(UUID.randomUUID(), "Les Animaux",Seq("aaa", "bbb")),
+    Dictation(UUID.randomUUID(), "Les Arbres", Seq("aaa", "bbb"))
   )
 
   def receive: Receive = {
@@ -19,13 +19,13 @@ class DictationRegistryActor extends Actor with ActorLogging {
     case UpdateDictation(dictationId, dictation) =>
       val origin = sender()
       dictations
-        .exists(_.id.equals(dictationId))
+        .exists(_.id.toString.equalsIgnoreCase(dictationId.toString))
         .fold(
           {
             // todo modify set here ;)
           dictations
           },
-          origin ! MissingDictation
+          origin ! MissingDictation(dictationId.toString)
         )
   }
 }
@@ -36,7 +36,7 @@ object DictationRegistryActor {
   final case object Success extends CommandResult
 
   final case object GetDictations
-  final case class UpdateDictation(dictationId: UUID, dictation: Dictation)
+  final case class UpdateDictation(dictationId: UUID, dictation: DictationInput)
 
   def props: Props = Props[DictationRegistryActor]
 }

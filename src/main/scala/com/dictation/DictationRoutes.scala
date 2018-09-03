@@ -9,7 +9,6 @@ import akka.http.scaladsl.server.directives.MethodDirectives.get
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
-import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 import com.dictation.DictationRegistryActor._
 import com.dictation.models.Models._
 
@@ -30,36 +29,29 @@ trait DictationRoutes extends JsonSupport {
   implicit lazy val timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
 
   lazy val dictationsRoutes: Route =
-    cors() {
-      pathPrefix("dictations") {
-        pathEnd {
-          get {
-            val dictations: Future[Dictations] = (dictationRegistryActor ? GetDictations).mapTo[Dictations]
-            complete(dictations)
-          }
-        } ~
-          path(JavaUUID) {
-            id =>
-              pathEnd {
-                put {
-                  extractExecutionContext {
-                    implicit ec =>
-                      entity(as[Dictation]) {
-                        dictation =>
-                          val result: Future[StatusCode] = (dictationRegistryActor ? UpdateDictation(id, dictation))
-                            .mapTo[CommandResult]
-                            .map {
-                              case Success => StatusCodes.OK
-                              case MissingDictation(missingId) =>
-                                // todo return error payload as well
-                                StatusCodes.NotFound
-                            }
-                          complete(result)
+    pathPrefix("dictations") {
+      (pathEnd & get) {
+        val dictations: Future[Dictations] = (dictationRegistryActor ? GetDictations).mapTo[Dictations]
+        complete(dictations)
+      } ~
+        (path(JavaUUID) & pathEnd) {
+          id =>
+            extractExecutionContext {
+              implicit ec => {
+                (put & entity(as[DictationInput])) {
+                  dictation =>
+                    val result: Future[StatusCode] = (dictationRegistryActor ? UpdateDictation(id, dictation))
+                      .mapTo[CommandResult]
+                      .map {
+                        case Success => StatusCodes.OK
+                        case MissingDictation(missingId) =>
+                          // todo return error payload as well
+                          StatusCodes.NotFound
                       }
-                  }
+                    complete(result)
                 }
               }
-          }
-      }
+            }
+        }
     }
 }
