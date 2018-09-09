@@ -1,4 +1,4 @@
-package com.dictation
+package com.dictation.routes
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives.handleRejections

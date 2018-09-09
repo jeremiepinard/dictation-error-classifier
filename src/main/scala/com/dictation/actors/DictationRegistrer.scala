@@ -1,14 +1,15 @@
-package com.dictation
+package com.dictation.actors
 
 import java.util.UUID
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.dictation.models.Models._
 
+
 import scalaz.syntax.std.boolean._
 
-class DictationRegistryActor extends Actor with ActorLogging {
-  import DictationRegistryActor._
+class DictationRegistrer extends Actor with ActorLogging {
+  import DictationRegistrer._
 
   var dictations = Set(
     Dictation(UUID.fromString("a8bc70f4-b432-11e8-96f8-529269fb1449"), "Les Animaux",Seq("aaa", "bbb")),
@@ -33,7 +34,7 @@ class DictationRegistryActor extends Actor with ActorLogging {
   }
 }
 
-object DictationRegistryActor {
+object DictationRegistrer {
   trait CommandResult
   final case class MissingDictation(id: String) extends CommandResult
   final case object Success extends CommandResult
@@ -41,5 +42,5 @@ object DictationRegistryActor {
   final case object GetDictations
   final case class UpdateDictation(dictationId: UUID, dictation: DictationInput)
 
-  def props: Props = Props[DictationRegistryActor]
+  def props: Props = Props[DictationRegistrer]
 }

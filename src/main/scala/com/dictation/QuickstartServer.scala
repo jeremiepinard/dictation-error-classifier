@@ -8,6 +8,8 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.DebuggingDirectives
 import akka.stream.ActorMaterializer
+import com.dictation.actors.DictationRegistrer
+import com.dictation.routes.{ApiRoutes, FrontendRoutes}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -18,7 +20,7 @@ object QuickstartServer extends App with ApiRoutes with FrontendRoutes {
   implicit val system: ActorSystem = ActorSystem()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val dictationRegistryActor: ActorRef = system.actorOf(DictationRegistryActor.props, "dictationRegistryActor")
+  val dictationRegistryActor: ActorRef = system.actorOf(DictationRegistrer.props, "dictationRegistryActor")
 
   lazy val routes: Route =
     DebuggingDirectives.logRequestResult("", Logging.InfoLevel) {

@@ -1,4 +1,4 @@
-package com.dictation
+package com.dictation.routes
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Route

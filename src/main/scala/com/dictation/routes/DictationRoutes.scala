@@ -1,4 +1,4 @@
-package com.dictation
+package com.dictation.routes
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.event.Logging
@@ -9,7 +9,8 @@ import akka.http.scaladsl.server.directives.MethodDirectives.get
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
-import com.dictation.DictationRegistryActor._
+import com.dictation.JsonSupport
+import com.dictation.actors.DictationRegistrer._
 import com.dictation.models.Models._
 
 import scala.concurrent.Future
@@ -26,7 +27,7 @@ trait DictationRoutes extends JsonSupport {
   def dictationRegistryActor: ActorRef
 
   // Required by the `ask` (?) method below
-  implicit lazy val timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
+  implicit lazy val timeout: Timeout = Timeout(5.seconds) // usually we'd obtain the timeout from the system's configuration
 
   lazy val dictationsRoutes: Route =
     pathPrefix("dictations") {
