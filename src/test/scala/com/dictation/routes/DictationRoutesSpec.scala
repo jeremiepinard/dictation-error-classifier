@@ -34,7 +34,7 @@ class DictationRoutesSpec extends WordSpec with Matchers with ScalaFutures with 
         TestActor.KeepRunning
       case UpdateDictation(id, _) =>
         id.toString match {
-          case "aabc70f4-b432-11e8-96f8-529269fb1449" => sender ! MissingDictation(id.toString)
+          case "aabc70f4-b432-11e8-96f8-529269fb1449" => sender ! MissingDictation(id)
           case uuid => sender ! Success
         }
         TestActor.KeepRunning

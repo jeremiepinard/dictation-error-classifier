@@ -44,7 +44,7 @@ trait DictationRoutes extends JsonSupport {
                     val result: Future[StatusCode] = (dictationRegistryActor ? UpdateDictation(id, dictation))
                       .mapTo[CommandResult]
                       .map {
-                        case Success => StatusCodes.OK
+                        case Success(_) => StatusCodes.OK
                         case MissingDictation(missingId) =>
                           // todo return error payload as well
                           StatusCodes.NotFound
