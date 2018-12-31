@@ -10,11 +10,14 @@ import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.pattern.ask
 import akka.util.Timeout
 import com.dictation.JsonSupport
+import com.dictation.actors.DictationActor.{CommandResult, MissingDictation, Success}
 import com.dictation.actors.DictationRegistrer._
 import com.dictation.models.Models._
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import scalaz.\/
+
 
 //#json-support
 
@@ -32,9 +35,31 @@ trait DictationRoutes extends JsonSupport {
   lazy val dictationsRoutes: Route =
     pathPrefix("dictations") {
       (pathEnd & get) {
-        val dictations: Future[Dictations] = (dictationRegistryActor ? GetDictations).mapTo[Dictations]
-        complete(dictations)
+        val dictations: Future[Throwable \/ Dictations] = (dictationRegistryActor ? GetDictations).mapTo[Throwable \/ Dictations]
+
+        onSuccess(dictations) {
+          _.fold(
+            error => failWith(error),
+            d => complete(d),
+          )
+        }
       } ~
+        pathEnd {
+          extractExecutionContext {
+            implicit ec => {
+              (post & entity(as[DictationInput])) {
+                dictation =>
+                  val result: Future[StatusCode] = (dictationRegistryActor ? CreateDictation(dictation))
+                    .mapTo[CommandResult]
+                    .map {
+                      case Success(id) => StatusCodes.OK
+                      case _ => StatusCodes.InternalServerError
+                    }
+                  complete(result)
+              }
+            }
+          }
+        } ~
         (path(JavaUUID) & pathEnd) {
           id =>
             extractExecutionContext {
