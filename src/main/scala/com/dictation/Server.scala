@@ -30,7 +30,7 @@ object Server extends App with ApiRoutes with FrontendRoutes {
     }
 
   val port: Int = \/.fromTryCatchNonFatal(sys.env("PORT").toInt).getOrElse(8080)
-
+println(sys.env)
   val dbUrl: String = \/.fromTryCatchNonFatal(sys.env("DB_URL")).getOrElse("jdbc:postgresql://127.0.0.1:5432/dictation_error_classifier")
   val dbUsername: String = \/.fromTryCatchNonFatal(sys.env("DB_USER")).getOrElse("dictation_error_classifier")
   val dbPassword: String = \/.fromTryCatchNonFatal(sys.env("DB_PASSWORD")).getOrElse("password")
