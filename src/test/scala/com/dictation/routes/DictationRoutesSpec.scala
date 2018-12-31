@@ -8,14 +8,14 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.testkit.{TestActor, TestProbe}
 import com.dictation.actors.DictationActor.{MissingDictation, Success}
-import com.dictation.actors.DictationRegistrer.{GetDictations, UpdateDictation}
+import com.dictation.actors.DictationRegistrer.{GetDictations, GetDictationsResult, UpdateDictation}
 import com.dictation.models.Models.{Dictation, DictationInput, Dictations}
 import com.dictation.{EntityMarshaller, JsonSupport}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpec}
 import spray.json.JsArray
-import scalaz.syntax.either._
 
+import scalaz.syntax.either._
 import scala.language.postfixOps
 
 class DictationRoutesSpec extends WordSpec with Matchers with ScalaFutures with ScalatestRouteTest
@@ -32,7 +32,7 @@ class DictationRoutesSpec extends WordSpec with Matchers with ScalaFutures with 
   override def beforeAll(): Unit = {
     probe.setAutoPilot((sender: ActorRef, msg: Any) => msg match {
       case GetDictations =>
-        sender ! storedDictations.right
+        sender ! GetDictationsResult(storedDictations.right)
         TestActor.KeepRunning
       case UpdateDictation(id, _) =>
         id.toString match {

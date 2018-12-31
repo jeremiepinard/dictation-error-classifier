@@ -35,10 +35,10 @@ trait DictationRoutes extends JsonSupport {
   lazy val dictationsRoutes: Route =
     pathPrefix("dictations") {
       (pathEnd & get) {
-        val dictations: Future[Throwable \/ Dictations] = (dictationRegistryActor ? GetDictations).mapTo[Throwable \/ Dictations]
+        val dictations: Future[GetDictationsResult] = (dictationRegistryActor ? GetDictations).mapTo[GetDictationsResult]
 
         onSuccess(dictations) {
-          _.fold(
+          _.result.fold(
             error => failWith(error),
             d => complete(d),
           )
