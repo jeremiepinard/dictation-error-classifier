@@ -29,11 +29,22 @@ object Server extends App with ApiRoutes with FrontendRoutes {
         frontendRoutes
     }
 
-  val port: Int = \/.fromTryCatchNonFatal(sys.env("PORT").toInt).getOrElse(8080)
-println(sys.env)
-  val dbUrl: String = \/.fromTryCatchNonFatal(sys.env("DB_URL")).getOrElse("jdbc:postgresql://127.0.0.1:5432/dictation_error_classifier")
-  val dbUsername: String = \/.fromTryCatchNonFatal(sys.env("DB_USER")).getOrElse("dictation_error_classifier")
-  val dbPassword: String = \/.fromTryCatchNonFatal(sys.env("DB_PASSWORD")).getOrElse("password")
+  private def envVar(name: String, default: String): String = {
+    \/.fromTryCatchNonFatal(sys.env(name))
+        .fold(
+          err => {
+            system.log.warning(s"could not find variable named [$name], using default")
+            default
+          },
+          success => success
+        )
+  }
+
+  val port: Int = envVar("PORT", "8080").toInt
+
+  val dbUrl: String = envVar("DB_URL", "jdbc:postgresql://127.0.0.1:5432/dictation_error_classifier")
+  val dbUsername: String = envVar("DB_USER", "dictation_error_classifier")
+  val dbPassword: String = envVar("DB_PASSWORD", "password")
 
   def startService(): Unit = {
 
@@ -44,7 +55,7 @@ println(sys.env)
 
     Http().bindAndHandle(routes, "0.0.0.0", port)
 
-    println(s"Server online at http://0.0.0.0:$port")
+    system.log.info(s"Server online at http://0.0.0.0:$port")
 
     Await.result(system.whenTerminated, Duration.Inf)
   }
