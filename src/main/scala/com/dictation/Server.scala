@@ -36,7 +36,10 @@ object Server extends App with ApiRoutes with FrontendRoutes {
             system.log.warning(s"could not find variable named [$name], using default")
             default
           },
-          success => success
+          success => {
+            system.log.info(s"properly found variable named [$name]")
+            success
+          }
         )
   }
 
