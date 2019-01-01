@@ -11,14 +11,13 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import akka.util.Timeout
 import com.dictation.models.Models._
-
-import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.language.postfixOps
-import scala.util.{Failure, Success}
-import scala.util.control.NonFatal
 import scalaz.\/
 import scalaz.syntax.either._
+
+import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
+import scala.util.control.NonFatal
 
 class DictationRegistrer extends Actor with ActorLogging with Stash {
   import DictationRegistrer._

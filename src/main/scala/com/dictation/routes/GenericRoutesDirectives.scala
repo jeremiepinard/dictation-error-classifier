@@ -1,12 +1,11 @@
 package com.dictation.routes
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.server.Directives.handleRejections
-import akka.http.scaladsl.server.{Directive0, RejectionHandler}
+import akka.http.scaladsl.server.{Directive0, Directives, RejectionHandler}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives.{cors, corsRejectionHandler}
 import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
 
-trait GenericRoutesDirectives {
+trait GenericRoutesDirectives extends Directives {
 
   implicit def system: ActorSystem
 
