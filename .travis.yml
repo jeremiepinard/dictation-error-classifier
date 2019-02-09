@@ -8,5 +8,5 @@ before_script:
   - ./src/main/resources/db/create.sh 127.0.0.1 5432 postgres
 
 script:
-  - flywayMigrate
-  - test  
+  - sbt flywayMigrate
+  - sbt test  
