@@ -1,15 +1,15 @@
 package com.dictation
 
 //#quick-start-server
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.DebuggingDirectives
 import akka.stream.ActorMaterializer
-import com.dictation.actors.{DictationActor, DictationRegistrer}
-import com.dictation.routes.{ApiRoutes, FrontendRoutes}
+import com.dictation.actors.{ DictationActor, DictationRegistrer }
+import com.dictation.routes.{ ApiRoutes, FrontendRoutes }
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -31,16 +31,15 @@ object Server extends App with ApiRoutes with FrontendRoutes {
 
   private def envVar(name: String, default: String): String = {
     \/.fromTryCatchNonFatal(sys.env(name))
-        .fold(
-          err => {
-            system.log.warning(s"could not find variable named [$name], using default")
-            default
-          },
-          success => {
-            system.log.info(s"properly found variable named [$name]")
-            success
-          }
-        )
+      .fold(
+        err => {
+          system.log.warning(s"could not find variable named [$name], using default")
+          default
+        },
+        success => {
+          system.log.info(s"properly found variable named [$name]")
+          success
+        })
   }
 
   val port: Int = envVar("PORT", "8080").toInt

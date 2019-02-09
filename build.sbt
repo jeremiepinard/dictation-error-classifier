@@ -3,6 +3,12 @@ lazy val akkaHttpVersion = "10.0.11"
 lazy val akkaVersion    = "2.5.11"
 
 enablePlugins(JavaAppPackaging)
+enablePlugins(FlywayPlugin)
+
+flywayUrl := "jdbc:postgresql://127.0.0.1:5432/dictation_error_classifier"
+flywayUser := "dictation_error_classifier"
+flywayPassword := "password"
+flywayLocations += "db/migration"
 
 lazy val baseSettings = (project in file(".")).
   settings(

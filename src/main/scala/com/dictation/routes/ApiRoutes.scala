@@ -2,7 +2,7 @@ package com.dictation.routes
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.{ExceptionHandler, Route}
+import akka.http.scaladsl.server.{ ExceptionHandler, Route }
 import akka.pattern.AskTimeoutException
 
 trait ApiRoutes extends DictationRoutes with GenericRoutesDirectives {
@@ -18,14 +18,13 @@ trait ApiRoutes extends DictationRoutes with GenericRoutesDirectives {
 
   lazy val apiRoutes: Route =
     pathPrefix("api") {
-      Route.seal (
+      Route.seal(
         corsWithRejections {
           handleExceptions(exceptionHandler) {
             pathPrefix("v1") {
               dictationsRoutes
             }
           }
-        }
-      )
+        })
     }
 }

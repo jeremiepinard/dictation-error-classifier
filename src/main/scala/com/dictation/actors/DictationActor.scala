@@ -2,15 +2,15 @@ package com.dictation.actors
 
 import java.util.UUID
 
-import akka.actor.{ActorLogging, Props}
+import akka.actor.{ ActorLogging, Props }
 import akka.persistence.PersistentActor
-import akka.persistence.pg.event.{JsonEncoder, Tagged}
+import akka.persistence.pg.event.{ JsonEncoder, Tagged }
 import com.dictation.models.Models._
 
 class DictationActor(dictationId: UUID) extends PersistentActor with ActorLogging {
   import DictationActor._
 
-  override def persistenceId: String  = dictationId.toString
+  override def persistenceId: String = dictationId.toString
 
   private var dictationState: Option[DictationInput] = None
 
@@ -42,26 +42,24 @@ class DictationActor(dictationId: UUID) extends PersistentActor with ActorLoggin
     case UpdateDictation(dictation) =>
       val origin = sender()
       dictationState.fold(
-        origin ! MissingDictation(dictationId)
-      ) {
-        _ =>
-          persist(DictationUpdatedEvent(dictation)) { event =>
-            updateDictation(event.dictation)
-            origin ! Success(dictationId)
-          }
-      }
+        origin ! MissingDictation(dictationId)) {
+          _ =>
+            persist(DictationUpdatedEvent(dictation)) { event =>
+              updateDictation(event.dictation)
+              origin ! Success(dictationId)
+            }
+        }
 
     case DeleteDictation =>
       val origin = sender()
       dictationState.fold(
-        origin ! MissingDictation(dictationId)
-      ) {
-        _ =>
-          persist(DictationDeletedEvent) { event =>
-            deleteDictation
-            origin ! Success(dictationId)
-          }
-      }
+        origin ! MissingDictation(dictationId)) {
+          _ =>
+            persist(DictationDeletedEvent) { event =>
+              deleteDictation
+              origin ! Success(dictationId)
+            }
+        }
 
     case other =>
       log.error(s"received unsupported message [$other]")

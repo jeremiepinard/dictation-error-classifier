@@ -3,7 +3,7 @@ package com.dictation.actors
 import java.util.UUID
 
 import akka.Done
-import akka.actor.{Actor, ActorLogging, ActorRef, Props, Stash}
+import akka.actor.{ Actor, ActorLogging, ActorRef, Props, Stash }
 import akka.pattern.ask
 import akka.persistence.pg.journal.query.PostgresReadJournal
 import akka.persistence.query.PersistenceQuery
@@ -15,7 +15,7 @@ import scalaz.\/
 import scalaz.syntax.either._
 
 import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.language.postfixOps
 import scala.util.control.NonFatal
 
@@ -65,14 +65,12 @@ class DictationRegistrer extends Actor with ActorLogging with Stash {
       val origin = sender()
       val actors = context.children.filter(_.path.name.contains(DictationActorNamePrefix))
       Future.sequence(actors.map(
-        actor => (actor ? DictationActor.GetDictation).mapTo[Option[Dictation]]
-      )).map(
+        actor => (actor ? DictationActor.GetDictation).mapTo[Option[Dictation]])).map(
         dictations =>
-          origin ! GetDictationsResult(Dictations(dictations.flatten.toSeq.sortBy(_.name)).right)
-      ).recover {
-        case NonFatal(ex) =>
-          origin ! GetDictationsResult(ex.left)
-      }
+          origin ! GetDictationsResult(Dictations(dictations.flatten.toSeq.sortBy(_.name)).right)).recover {
+          case NonFatal(ex) =>
+            origin ! GetDictationsResult(ex.left)
+        }
 
     case CreateDictation(dictation) =>
       val id = UUID.randomUUID()

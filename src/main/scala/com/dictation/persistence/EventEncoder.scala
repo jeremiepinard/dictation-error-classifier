@@ -3,7 +3,7 @@ package com.dictation.persistence
 import akka.persistence.pg.JsonString
 import akka.persistence.pg.event.JsonEncoder
 import com.dictation.JsonSupport
-import com.dictation.actors.DictationActor.{DictationCreatedEvent, DictationDeletedEvent, DictationUpdatedEvent}
+import com.dictation.actors.DictationActor.{ DictationCreatedEvent, DictationDeletedEvent, DictationUpdatedEvent }
 import spray.json.DefaultJsonProtocol.jsonFormat1
 import spray.json.RootJsonFormat
 import spray.json._

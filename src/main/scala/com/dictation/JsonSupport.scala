@@ -3,13 +3,12 @@ package com.dictation
 import java.util.UUID
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import com.dictation.models.Models.{Dictation, DictationInput, Dictations, ErrorResponse}
-import spray.json.{DefaultJsonProtocol, JsString, JsValue, JsonFormat, RootJsonFormat, deserializationError}
+import com.dictation.models.Models.{ Dictation, DictationInput, Dictations, ErrorResponse }
+import spray.json.{ DefaultJsonProtocol, JsString, JsValue, JsonFormat, RootJsonFormat, deserializationError }
 
 trait JsonSupport extends SprayJsonSupport {
   // import the default encoders for primitive types (Int, String, Lists etc)
   import DefaultJsonProtocol._
-
 
   implicit object UUIDJsonFormat extends JsonFormat[UUID] {
     def write(x: UUID) = JsString(x.toString)
