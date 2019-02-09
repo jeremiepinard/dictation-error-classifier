@@ -10,3 +10,5 @@ Support tool for collecting dictations from students and analyzing error types.
 ./create.sh 127.0.0.1 5432 postgres
 sbt flywayMigrate
 ```
+
+[Dictation Error Classifier](https://dictation-error-classifier.herokuapp.com/)
