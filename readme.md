@@ -1,4 +1,6 @@
 
+[![Build Status](https://travis-ci.org/jeremiepinard/dictation-error-classifier.svg?branch=master)](https://travis-ci.org/jeremiepinard/dictation-error-classifier)
+
 # Purpose
 
 Support tool for collecting dictations from students and analyzing error types.
